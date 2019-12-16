@@ -1,6 +1,6 @@
 const Stock = {
-  totalItems: 0,
-  optimalReturn: 0,
+  totalItems: Number,
+  optimalReturn: Number,
   lastStocked: {
     type: Date,
     default: 0

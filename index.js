@@ -4,6 +4,8 @@ const http = require("http");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
 
+const app = require("./app");
+
 const report = (type = "master", id = process.pid) => ({
   type,
   id
@@ -24,5 +26,11 @@ if (cluster.isMaster) {
     console.log(`new worker process spawned.`);
   });
 } else {
-  http.createServer(app).listen(9000);
+  const PORT = process.env.PORT || 8080;
+
+  http
+    .createServer(app)
+    .listen(PORT, () => console.log(`Server started at ${PORT}`));
 }
+
+require("./database");

@@ -1,4 +1,6 @@
-const Product = {
+const { Schema, model } = require("mongoose");
+
+const ProductSchema = Schema({
   barcode: {
     type: String,
     required: true
@@ -7,21 +9,17 @@ const Product = {
     type: String,
     required: true
   },
-  price: {
-    type: Int,
-    required: true,
-    default: 0
-  },
-  onSale: false,
-  //Should be null by default
-  salePrice: {
-    type: Int,
-    required: false,
-    default: null
-  },
   //TODO: Should be an array of strings
-  image: {
-    type: String,
-    required: true
+  images: [
+    {
+      type: String,
+      required: true
+    }
+  ],
+  quantity: {
+    type: Number,
+    default: 0
   }
-};
+});
+
+module.exports = model("products", ProductSchema);
