@@ -8,16 +8,10 @@ const {
 
 //Default user schema definitions
 const UserSchema = new Schema({
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    validate: emailValidator
-  },
+  email: Email,
   passwordHash: { type: String, required: true, validate: passwordValidator },
   //
-  firstname: { type: String },
-  lastname: { type: String },
+  fullname: { type: String },
   phone: { type: String, validate: phoneValidator },
   active: {
     type: Number,
@@ -36,7 +30,11 @@ const UserSchema = new Schema({
     type: Number,
     default: 0
   },
-  searchLog: [String]
+  searchLog: [String],
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
 });
 
 /** Handy inheritance/extender function.
@@ -47,14 +45,15 @@ const extend = (Schema, obj) =>
 
 // Extended user types
 const CustomerUserSchema = extend(UserSchema, {
-  shippingAddress: { type: String },
+  shippingAddress: AddressSchema,
   orderHistory: [OrderSchema]
 });
 
 const AdminUserSchema = extend(UserSchema, {
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
-  phone: { type: String, required: true }
+  isAdmin: {
+    type: Boolean,
+    default: true
+  }
 });
 
 const Customers = model("customers", CustomerUserSchema);

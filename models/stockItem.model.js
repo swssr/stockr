@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const { orderValidator } = require("../utils/schema-validators");
+// const { orderValidator } = require("../utils/schema-validators");
 
 const StockItemSchema = new Schema({
   barcode: {
@@ -22,6 +22,10 @@ const StockItemSchema = new Schema({
     default: 0,
     min: 0
   },
+  supplierPrice: {
+    type: Number,
+    default: 0
+  },
   onSale: {
     type: Boolean,
     default: false
@@ -31,10 +35,6 @@ const StockItemSchema = new Schema({
     required: false,
     default: null,
     min: 0
-  },
-  soldFor: {
-    type: Number,
-    default: null
   },
   //TODO: Should be an array of strings
   images: [
@@ -46,21 +46,23 @@ const StockItemSchema = new Schema({
   ],
   quantity: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0
   },
   featured: {
     type: Boolean,
-    default: false,
-    validate: {
-      validator: () => !!this.quantity,
-      message: "Cannot feature Product out of stock! - fromDb"
-    }
+    default: false
+    // validate: {
+    //   // validator: () => !!this.quantity,
+    //   message: "Cannot feature Product out of stock! - fromDb"
+    // }
   },
   metrics: {
     orders: {
       type: Number,
       default: 0,
-      validate: orderValidator
+      // validate: orderValidator,
+      max: this.quantity
     },
     ratings: {
       type: Number,

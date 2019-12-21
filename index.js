@@ -30,7 +30,7 @@ if (cluster.isMaster) {
 
   http
     .createServer(app)
-    .listen(PORT, () => console.log(`Server started at ${PORT}`));
+    .listen(PORT, () => console.log(`Server started at port ${PORT}`));
 }
 
 require("./database");

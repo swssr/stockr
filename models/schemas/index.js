@@ -1,27 +1,38 @@
-import { Schema, model } from "mongoose";
+const { Schema, model } = require("mongoose");
+const { emailValidator } = require("../../utils/schema-validators");
 
-
-const OrderSchema = new Schema({
-  orderNumber: {
-    type: Number,
-    unique: true
-  },
-  customerEmail: {
-    type: String,
-    required: true,
-    validate: emailValidator
-  },
-  orderDate: Date,
-  items: {
-    barcode: String,
-    quantity: {
-      type: Number,
-      default: 1
-    }
-  },
-  totalPaper: Number
+const EmailSchema = new Schema({
+  type: String
+  // validate: emailValidator
 });
 
+const AddressSchema = new Schema({
+  building: String,
+  surburb: String,
+  town: String,
+  geolocation: String
+});
+
+// const OrderSchema = new Schema({
+//   orderNumber: {
+//     type: String,
+//     required: true
+//   },
+//   customerEmail: EmailSchema,
+//   ShippingAddress: AddressSchema,
+//   orderDate: Date,
+//   items: {
+//     barcode: String,
+//     quantity: {
+//       type: Number,
+//       default: 1
+//     }
+//   },
+//   totalPrice: Number
+// });
+
 module.exports = {
-  OrderSchema
+  // OrderSchema,
+  EmailSchema,
+  AddressSchema
 };

@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const { MONGO_URI } = process.env;
 
 //Connecting to database
-const uri = MONGO_URI || "mongodb://localhost:27017/bzntech-store";
+const uri = MONGO_URI || "mongodb://localhost:27017/bzntechdb";
 const options = {
   connectTimeoutMS: 10000,
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true 
 };
 
 mongoose.connect(uri, options);

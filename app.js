@@ -8,18 +8,23 @@
 
 // #REGION imports
 const express = require("express");
+const cors = require("cors");
 
 // #ENDREGION imports
 
 // #REGION Declarations
 const app = express();
 
-const stockRouter = require("./routes/stock.router.js");
+const stockRouter = require("./routes/stock.router");
+const ordersRouter = require("./routes/orders.route");
 
 //2. Middleware
 app.use(express.json());
 
+app.use(cors());
+
 //3. Middleware
-app.use("/api", stockRouter);
+app.use("/v1/api/stock", stockRouter);
+app.use("/v1/api/orders", ordersRouter);
 
 module.exports = app;
