@@ -6,7 +6,7 @@ const OrderModel = require("../models/reports/order.report");
 const router = Router();
 //Customer check out
 router.post("/", async (req, res) => {
-  let { cart } = req.body;
+  let cart = req.body;
   try {
     const report = await OrderService.CreateOrder(cart);
     res.status(200).json({ report });
@@ -18,7 +18,6 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    t;
     let orders = await OrderService.GetOrders();
     res.status(200).json(orders.reverse());
   } catch (error) {

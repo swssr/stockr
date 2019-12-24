@@ -2,6 +2,9 @@ import React from "react";
 import { apiURI } from "../../config";
 import { sect, card } from "../styles/styles";
 
+import SimpleTable from "./table";
+import { removeDuplicates } from "../../../utils/helpers";
+
 class StockList extends React.Component {
   constructor() {
     super();
@@ -11,26 +14,19 @@ class StockList extends React.Component {
   }
 
   componentDidMount() {
-    fetch(apiURI + "/stock")
+    //Onload
+    fetch("http://localhost:8080/v1/api/stock")
       .then(res => res.json())
-      .then(data => this.setState({ stock: [...data] }));
+      .then(data => {
+        this.setState({ stock: [...data] });
+      })
+      .catch(err => console.error(err));
   }
   render() {
-    const { stock } = this.state;
     return (
       <section>
         <h1>Available Stock</h1>
-        {stock &&
-          stock.map(item => {
-            return (
-              <div style={card}>
-                <p>{item.name}</p>
-                <h3>{item.name}</h3>
-                <p>quantity: {item.quantity}</p>
-                <h4>{item.price}</h4>
-              </div>
-            );
-          })}
+        {() => <SimpleTable data={this.state.stock}></SimpleTable>}
       </section>
     );
   }

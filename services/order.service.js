@@ -22,36 +22,57 @@ module.exports = {
     const orderNumber = orderid.generate(Date.now());
     const itemsBought = await StockService.GetStockWhere(cartItemBarcodes);
 
-    // const orderItems = itemsBought.map((item, index) => {
-    //   const cartItem = cart.items[index];
-    //   return {
-    //     barcode: cartItem.barcode,
-    //     price: cartItem.price,
-    //     count: cartItem.count,
-    //     subTotal: cartItem.price * cartItem.count
-    //   };
-    // });
-    // const total = calcTotal(orderItems);
-    // const newOrder = {
-    //   orderNumber,
-    //   customerDetails: cart.customerDetails,
-    //   items: orderItems,
-    //   total
-    // };
-    // let doc = { raw: null };
-    // await OrderModel.create(newOrder).catch(error => console.error(error));
-    // OrderModel.updateOne(
+    const orderItems = itemsBought.map((item, index) => {
+      const cartItem = cart.items[index];
+      const { price } = item._doc;
+      return {
+        barcode: cartItem.barcode,
+        name: cartItem.name,
+        price,
+        count: cartItem.count,
+        subTotal: price * cartItem.count
+      };
+    });
+
+    const total = calcTotal(orderItems);
+
+    const newOrder = {
+      orderNumber,
+      ...cart,
+      items: orderItems,
+      total
+    };
+    let doc = { raw: null };
+    await OrderModel.create(newOrder)
+      .then(value => {
+        console.log("Adding order!");
+      })
+      .catch(error => console.error(error));
+    // await OrderModel.updateOne(
     //   { orderNumber },
-    //   { $push: { items: { $each: cart.items } } }
+    //   { ...newOrder, $push: { items: { $each: cart.items } } },
+    //   { upsert: true }
     // )
-    //   .then(raw => (doc.raw = raw))
+    //   .then(raw => {
+    //     doc.raw = raw;
+    //     console.log({ fromOrdercreeeeea: raw });
+    //   })
     //   .catch(error => console.error(error));
 
     // //Mark and descrease quantity cross order items from inventory
     // //TODO: Should probably use event emitters, and update user on what's happening.
-    // const paidOrder = await PaymentService.ValidatePayment(newOrder);
-    // const report = StockService.PurchaseStock(paidOrder);
-    // return { report, doc };
-    return { itemsBought };
+    const CustomerOrderSlip = await PaymentService.ValidatePayment(newOrder);
+    const StockPurchaseReport = StockService.PurchaseStock(CustomerOrderSlip);
+    return {
+      CustomerOrderSlip,
+      StockPurchaseReport
+    };
+  },
+  deliverOrder(orderNumber) {
+    StockModel.update(
+      { orderNumber },
+      { isCheckedOut: true, deliverStatus: 1 },
+      (err, raw) => console.log({ raw, err })
+    );
   }
 };

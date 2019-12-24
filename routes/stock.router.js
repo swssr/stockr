@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Router } = require("express");
 
-const { StockService } = require("../services");
+const { StockService, PurgeCollection } = require("../services");
 const StockModel = require("../models/stockItem.model");
 
 const router = Router();
@@ -43,5 +43,8 @@ router.post("/setPromo", async (req, res) => {
   const stockToUpdate = req.body;
   res.json({ saleItems, promoPrice });
 });
+
+//TODO: REMOVE!!!! DO NOT SHIP THIS
+// router.delete("/purge", (req, res) => PurgeCollection(StockModel));
 
 module.exports = router;

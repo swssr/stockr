@@ -31,7 +31,7 @@ class OrderList extends React.Component {
             const { customerDetails, items, isPaid } = order;
             const count = items.length;
             return (
-              <div style={card}>
+              <div className="card">
                 <h3>
                   {customerDetails &&
                     customerDetails.fullname &&

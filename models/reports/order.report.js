@@ -46,12 +46,21 @@ const OrderSchema = new Schema({
     type: Boolean,
     default: false
   },
-  isDelivered: {
-    type: Boolean,
-    default: false
+  deliverStatus: {
+    type: Number,
+    default: 0,
+    validate: {
+      validator: value => value == 0 || value == 1 || value == 2,
+      message: "Delivery status can only be number 0, 1, or 2."
+    }
   },
   // shippingDetails: AddressSchema
-  shippingDetails: String
+  shippingDetails: {
+    building: String,
+    surburb: String,
+    town: String,
+    geolocation: String
+  }
 });
 
 module.exports = model("Orders", OrderSchema);
