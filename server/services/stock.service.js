@@ -44,8 +44,28 @@ module.exports = {
     async function setPromo(item) {
       await StockModel.updateOne(
         { barcode: item.barcode },
-        { onSale: true, promoPrice },
-        { upsert: true }
+        { onSale: true, promoPrice: item.promoPrice },
+        (err, raw) => {
+          console.log({
+            from: "Set Promo callback",
+            raw
+          });
+        }
+      );
+    }
+    stockToUpdate.forEach(setPromo);
+  },
+  async RemovePromo(stockToUpdate) {
+    async function setPromo(item) {
+      await StockModel.updateOne(
+        { barcode: item.barcode },
+        { onSale: false, promoPrice: null },
+        (err, raw) => {
+          console.log({
+            from: "Remove Promo callback",
+            raw
+          });
+        }
       );
     }
     stockToUpdate.forEach(setPromo);

@@ -48,6 +48,22 @@ router.post("/setPromo", async (req, res) => {
     return res.status(500).send(error);
   }
 });
+router.post("/endPromo", async (req, res) => {
+  /**
+   * Foreach =>
+   * I need to provide -
+   * barcode
+   * promoPrice
+   *
+   *
+   */
+  try {
+    await StockService.RemovePromo(req.body);
+    return res.status(200).send("Promotion removed successfully");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+});
 
 //TODO: REMOVE!!!! DO NOT SHIP THIS
 // router.delete("/purge", (req, res) => PurgeCollection(StockModel));
