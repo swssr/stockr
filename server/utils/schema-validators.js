@@ -10,7 +10,7 @@ module.exports = {
   },
   passwordValidator: {
     validator: value => passwordRegex.test(value),
-    message: "Password not strong email - fromDb"
+    message: "Password not strong enough - fromDb"
   },
   phoneValidator: {
     //TODO: validate phone number properly, remove spaces from frontend and before

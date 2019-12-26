@@ -1,15 +1,27 @@
 const { Schema, model } = require("mongoose");
-const { OrderSchema } = require("./schemas");
+
+const {
+  BaseOrderSchema,
+  CustomerOrderModel
+} = require("./reports/customerOrder.report");
 const {
   emailValidator,
   passwordValidator,
   phoneValidator
 } = require("../utils/schema-validators");
 
+const { extendSchema } = require("../utils/helpers");
+
+// Dumb subDocuments
+const { AddressSchema, EmailSchema } = require("./schemas/index");
+
 //Default user schema definitions
 const UserSchema = new Schema({
-  email: Email,
-  passwordHash: { type: String, required: true, validate: passwordValidator },
+  email: String,
+  passwordHash: {
+    type: String,
+    required: true /** ,validate: passwordValidator */
+  },
   //
   fullname: { type: String },
   phone: { type: String, validate: phoneValidator },
@@ -26,40 +38,61 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now()
   },
+  lastVisit: {
+    type: Date,
+    default: Date.now().toString()
+  },
   visitCount: {
     type: Number,
     default: 0
   },
   searchLog: [String],
+  orderHistory: [BaseOrderSchema],
   isAdmin: {
     type: Boolean,
     default: false
   }
 });
 
-/** Handy inheritance/extender function.
- * Creates new Schema then assigns the properties of parent schema.
- * */
-const extend = (Schema, obj) =>
-  new mongoose.Schema(Object.assign({}, Schema.obj, obj));
-
 // Extended user types
-const CustomerUserSchema = extend(UserSchema, {
+const CustomerUserSchema = extendSchema(UserSchema, {
   shippingAddress: AddressSchema,
-  orderHistory: [OrderSchema]
+  orderHistory: [
+    {
+      orderNumber: String,
+      items: [
+        {
+          barcode: String,
+          name: String,
+          price: Number,
+          count: Number,
+          subTotal: Number
+        }
+      ],
+      total: {
+        type: Number,
+        default: 0
+      },
+      date: {
+        type: Date,
+        default: Date.now().toString()
+      }
+    }
+  ]
 });
 
-const AdminUserSchema = extend(UserSchema, {
+const AdminUserSchema = extendSchema(UserSchema, {
   isAdmin: {
     type: Boolean,
     default: true
-  }
+  },
+  role: { type: String, default: "Omniponent" }
 });
 
-const Customers = model("customers", CustomerUserSchema);
-const AdminUser = model("admins", AdminUserSchema);
+const CustomerModel = model("Customers", CustomerUserSchema);
+const AdminUserModel = model("Admins", AdminUserSchema);
 
 module.exports = {
-  Customers,
-  AdminUser
+  CustomerModel,
+  AdminUserModel
 };

@@ -1,19 +1,22 @@
-const OrderModel = require("../models/reports/order.report");
+const {
+  CustomerOrderModel
+} = require("../models/reports/customerOrder.report");
 const { secret } = require("../config");
 const orderid = require("order-id")(secret);
-
-const { calcTotal } = require("../utils/helpers");
 
 const StockModel = require("../models/stockItem.model");
 const StockService = require("../services/stock.service");
 const PaymentService = require("../services/payment.service");
+const ReportingService = require("../services/report.service");
+
+const { calcTotal } = require("../utils/helpers");
 
 module.exports = {
   async GetOrderWhere(criteria) {
-    return await OrderModel.find(criteria);
+    return await CustomerOrderModel.find(criteria);
   },
   async GetOrders() {
-    let response = await OrderModel.find();
+    let response = await CustomerOrderModel.find();
     return response;
   },
   async CreateOrder(cart) {
@@ -42,18 +45,37 @@ module.exports = {
       items: orderItems,
       total
     };
-    await OrderModel.create(newOrder)
+    await CustomerOrderModel.create(newOrder)
       .then(value => {
         console.log("Added order!", value);
       })
       .catch(error => console.error(error));
     // //Mark and descrease quantity cross order items from inventory
     // //TODO: Should probably use event emitters, and update user on what's happening.
-    const CustomerOrderSlip = await PaymentService.ValidatePayment(newOrder);
-    const StockPurchaseReport = StockService.PurchaseStock(CustomerOrderSlip);
-    return {
-      CustomerOrderSlip,
+    const ValidatedOrder = await PaymentService.ValidatePayment(newOrder);
+    const StockPurchaseReport = await StockService.PurchaseStock(
+      ValidatedOrder
+    );
+    const orderLogReport = await ReportingService.LogCustomerPurchase(
       StockPurchaseReport
+    );
+
+    // console.log({
+    //   form: "Order Service",
+    //   report: {
+    //     ValidatedOrder,
+    //     StockPurchaseReport,
+    //     orderLogReport
+    //   }
+    // });
+
+    console.log({
+      StockPurchaseReport,
+      orderLogReport
+    });
+    return {
+      StockPurchaseReport,
+      orderLogReport
     };
   },
   deliverOrder(orderNumber) {

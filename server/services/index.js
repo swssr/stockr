@@ -4,7 +4,7 @@ function PurgeCollection(Model) {
 
 module.exports = {
   OrderService: require("./order.service"),
-  ReportService: require("./reports.service"),
+  ReportService: require("./report.service"),
   StockService: require("./stock.service"),
   PurgeCollection
 };

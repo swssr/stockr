@@ -50,9 +50,8 @@ module.exports = {
     }
     stockToUpdate.forEach(setPromo);
   },
-  PurchaseStock(customerOrderReport) {
+  async PurchaseStock(customerOrderReport) {
     //What happens when someone is buying.
-    let StockPurchaseReport;
     //If order hasn;t been paid
     if (!customerOrderReport.isPaid)
       return { message: "Please pay your invoice!" };
@@ -79,22 +78,22 @@ module.exports = {
           console.log("Updated", raw);
         }
       );
-      customerOrderReport.items.forEach(updateItemFn);
-      return {
-        purchaseSlip: {
-          ...customerOrderReport,
-          items: customerOrderReport.items.map(v => ({
-            count: v.count,
-            name: v.name
-          }))
-        },
-        inventoryReport: {
-          orderNumber: customerOrderReport.orderNumber,
-          stockRemoved: customerOrderReport.items.map(
-            v => `${v.count} * ${v.name}`
-          )
-        }
-      };
+    };
+
+    customerOrderReport.items.forEach(updateItemFn);
+
+    return {
+      ...customerOrderReport,
+      items: customerOrderReport.items.map(v => ({
+        count: v.count,
+        name: v.name
+      })),
+      inventoryReport: {
+        orderNumber: customerOrderReport.orderNumber,
+        itemsRequested: customerOrderReport.items.map(
+          v => `${v.count} * ${v.name}`
+        )
+      }
     };
   }
 };

@@ -1,10 +1,31 @@
 const { Schema, model } = require("mongoose");
 const { EmailSchema, AddressSchema } = require("../schemas");
 
-const utils = require("../../utils/helpers");
+const { extendSchema } = require("../../utils/helpers");
 
-const OrderSchema = new Schema({
-  //TODO: Use uuid/order-id npm package as orderId
+const BaseOrderSchema = new Schema({
+  orderNumber: String,
+  items: [
+    {
+      barcode: String,
+      name: String,
+      price: Number,
+      count: Number,
+      subTotal: Number
+    }
+  ],
+  total: {
+    type: Number,
+    default: 0
+  },
+  date: {
+    type: Date,
+    default: Date.now().toString()
+  }
+});
+
+const OrderSchema = extendSchema(BaseOrderSchema, {
+  //TODO: Use uuid/order-id npm package as orderId ✔
   orderNumber: String,
   customerDetails: {
     fullname: String,
@@ -50,11 +71,16 @@ const OrderSchema = new Schema({
     type: Number,
     default: 0,
     validate: {
+      //0 is order seen, 1 is pending delivery and 2 is delivered.
       validator: value => value == 0 || value == 1 || value == 2,
       message: "Delivery status can only be number 0, 1, or 2."
     }
   },
-  // shippingDetails: AddressSchema
+  // Shipping address will be one of known branches.
+  internalTransfer: {
+    type: Boolean,
+    default: false
+  },
   shippingDetails: {
     building: String,
     surburb: String,
@@ -63,4 +89,7 @@ const OrderSchema = new Schema({
   }
 });
 
-module.exports = model("Orders", OrderSchema);
+module.exports = {
+  BaseOrderSchema,
+  CustomerOrderModel: model("Orders", OrderSchema)
+};

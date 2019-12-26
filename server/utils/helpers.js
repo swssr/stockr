@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 function calcTotal(arr = [], initialTotal) {
   let accumulator = initialTotal || 0;
   for (const item of arr) {
@@ -18,7 +20,14 @@ function removeDuplicates(array, prop) {
   return result;
 }
 
+/** Handy inheritance/extender function.
+ * Creates new Schema then assigns the properties of parent schema.
+ * */
+const extendSchema = (_Schema, obj) =>
+  new mongoose.Schema(Object.assign({}, _Schema.obj, obj));
+
 module.exports = {
+  extendSchema,
   calcTotal,
   removeDuplicates
 };

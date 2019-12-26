@@ -12,27 +12,7 @@ const AddressSchema = new Schema({
   town: String,
   geolocation: String
 });
-
-// const OrderSchema = new Schema({
-//   orderNumber: {
-//     type: String,
-//     required: true
-//   },
-//   customerEmail: EmailSchema,
-//   ShippingAddress: AddressSchema,
-//   orderDate: Date,
-//   items: {
-//     barcode: String,
-//     quantity: {
-//       type: Number,
-//       default: 1
-//     }
-//   },
-//   totalPrice: Number
-// });
-
 module.exports = {
-  // OrderSchema,
   EmailSchema,
   AddressSchema
 };
