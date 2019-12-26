@@ -53,13 +53,45 @@ router.post("/endPromo", async (req, res) => {
    * Foreach =>
    * I need to provide -
    * barcode
-   * promoPrice
+   *
    *
    *
    */
   try {
     await StockService.RemovePromo(req.body);
     return res.status(200).send("Promotion removed successfully");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+});
+router.post("/setfeatured", async (req, res) => {
+  /**
+   * Foreach =>
+   * I need to provide -
+   * barcode
+   *
+   *
+   *
+   */
+  try {
+    await StockService.SetFeatured(req.body);
+    return res.status(200).send("Items featured successfully");
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+});
+router.post("/removefeatured", async (req, res) => {
+  /**
+   * Foreach =>
+   * I need to provide -
+   * barcode
+   *
+   *
+   *
+   */
+  try {
+    await StockService.RemoveFeatured(req.body);
+    return res.status(200).send("Removed items from Featured successfully");
   } catch (error) {
     return res.status(500).send(error.message);
   }

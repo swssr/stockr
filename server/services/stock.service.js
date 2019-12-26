@@ -44,7 +44,7 @@ module.exports = {
     async function setPromo(item) {
       await StockModel.updateOne(
         { barcode: item.barcode },
-        { onSale: true, promoPrice: item.promoPrice },
+        { onSale: true, featured: true, promoPrice: item.promoPrice },
         (err, raw) => {
           console.log({
             from: "Set Promo callback",
@@ -63,6 +63,36 @@ module.exports = {
         (err, raw) => {
           console.log({
             from: "Remove Promo callback",
+            raw
+          });
+        }
+      );
+    }
+    stockToUpdate.forEach(setPromo);
+  },
+  async SetFeatured(stockToUpdate) {
+    async function setPromo(item) {
+      await StockModel.updateOne(
+        { barcode: item.barcode },
+        { featured: true },
+        (err, raw) => {
+          console.log({
+            from: "SetFeatured callback",
+            raw
+          });
+        }
+      );
+    }
+    stockToUpdate.forEach(setPromo);
+  },
+  async RemoveFeatured(stockToUpdate) {
+    async function setPromo(item) {
+      await StockModel.updateOne(
+        { barcode: item.barcode },
+        { featured: false },
+        (err, raw) => {
+          console.log({
+            from: "Remove Featured callback",
             raw
           });
         }
